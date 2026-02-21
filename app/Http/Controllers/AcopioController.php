@@ -19,16 +19,36 @@ class AcopioController extends Controller
     // Esta función recibe los datos del formulario de React y los guarda
     public function store(Request $request)
     {
-        // 1. Validamos que los datos sean correctos
         $validated = $request->validate([
             'material' => 'required|string',
             'peso_kg' => 'required|numeric|min:0.1',
         ]);
 
-        // 2. Guardamos en la base de datos
         Acopio::create($validated);
 
-        // 3. Regresamos a la página anterior (Inertia actualizará la tabla automáticamente)
-        return redirect()->back();
+        // MODIFICA ESTA LÍNEA: Agregamos ->with()
+        return redirect()->back()->with('success', '¡Material registrado correctamente!');
+    }
+
+    public function destroy(Acopio $acopio)
+    {
+        $acopio->delete();
+        
+        // MODIFICA ESTA LÍNEA: Agregamos ->with()
+        return redirect()->back()->with('success', 'Registro eliminado del sistema.');
+    }
+
+
+    public function update(Request $request, Acopio $acopio)
+    {
+        $validated = $request->validate([
+            'material' => 'required|string',
+            'peso_kg' => 'required|numeric|min:0.1',
+        ]);
+
+        // Actualizamos el registro en la base de datos
+        $acopio->update($validated);
+        
+        return redirect()->back()->with('success', 'Registro actualizado con éxito.');
     }
 }
